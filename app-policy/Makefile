@@ -7,6 +7,13 @@ all: build
 ## Run the tests for the current platform/architecture
 test: ut
 
+CLOWDER=$(shell test -e ../.clowder && echo clowder)
+
+ifeq ($(CLOWDER),clowder)
+EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../:/go/src/github.com/projectcalico:rw
+endif
+
+
 ###############################################################################
 # Both native and cross architecture builds are supported.
 # The target architecture is select by setting the ARCH variable.

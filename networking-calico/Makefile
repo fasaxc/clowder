@@ -42,6 +42,8 @@ endif
 	# should work out how to continue doing that, but we have no supported
 	# install instructions that rely on such a package.
 
+build:
+
 clean:
 	git clean -fxd -e release-notes-$(VERSION)
 

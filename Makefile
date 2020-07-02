@@ -1,2 +1,9 @@
 all:
-	for dir in *; do if test -d $$dir; then make --directory=$$dir build; fi; done
+	for dir in *; do \
+	  if [ $dir = "bird" ]; then \
+	    continue; \
+	  fi; \
+	  if test -d $$dir; then \
+	    $(MAKE) --directory=$$dir build; \
+	  fi; \
+	done

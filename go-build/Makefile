@@ -1,6 +1,6 @@
 # Shortcut targets
 default: image
-
+build: image
 ## Build binary for current platform
 all: image-all
 ###############################################################################

@@ -43,6 +43,9 @@ APIS_SRCS := $(filter-out ./lib/apis/v3/zz_generated.deepcopy.go, $(wildcard ./l
 # The path, inside libcalico-go, to the cert files required for etcdv3 fv test
 TEST_CERT_PATH := test/etcd-ut-certs/
 
+.PHONY: build
+build:
+
 .PHONY: clean
 clean:
 	rm -rf .go-pkg-cache vendor $(BINDIR) checkouts

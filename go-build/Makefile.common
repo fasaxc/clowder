@@ -1,6 +1,10 @@
 # Disable built-in rules
 .SUFFIXES:
 
+ifeq ($(shell test -e ../.clowder && echo clowder),clowder)
+EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../:/go/src/github.com/projectcalico:rw 
+endif
+
 # Shortcut targets
 default: build
 

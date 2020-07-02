@@ -43,6 +43,9 @@ require (
 )
 
 replace (
+	github.com/projectcalico/libcalico-go => ../libcalico-go
+	github.com/projectcalico/typha => ../typha
+
 	github.com/sirupsen/logrus => github.com/projectcalico/logrus v0.0.0-20180701205716-fc9bbf2f5799
 
 	// Need replacements for all the k8s subsidiary projects that are pulled in indirectly because

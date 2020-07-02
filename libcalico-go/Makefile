@@ -13,12 +13,19 @@ LOCAL_CHECKS = vendor goimports check-gen-files
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
+CLOWDER=$(shell test -e ../.clowder && echo clowder)
+
+ifeq ($(CLOWDER),clowder)
+Makefile.common: ../go-build/Makefile.common
+	cp "$<" "$@"
+else
 Makefile.common: Makefile.common.$(MAKE_BRANCH)
 	cp "$<" "$@"
 Makefile.common.$(MAKE_BRANCH):
 	# Clean up any files downloaded from other branches so they don't accumulate.
 	rm -f Makefile.common.*
 	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
+endif
 
 include Makefile.common
 

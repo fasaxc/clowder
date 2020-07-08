@@ -1,0 +1,32 @@
+version: v1.0
+name: Initial Pipeline
+agent:
+  machine:
+    type: e1-standard-4
+    os_image: ubuntu1804
+blocks:
+  - name: 'Testing'
+    task:
+      jobs:
+        - name: 'Unit and FV tests (tox)'
+          commands:
+            - checkout
+            - sudo apt-get install -y tox
+            - tox
+        - name: 'Mainline ST (DevStack + Tempest) on Ussuri'
+          commands:
+            - checkout
+            - git checkout -b devstack-test
+            - mkdir -p ~/calico
+            - ln -s `pwd` ~/calico/networking-calico
+            - sudo apt-get install -y python-all-dev python3-all-dev python3-pip
+            - sudo pip install tox
+            - export LIBVIRT_TYPE=qemu
+            - export UPPER_CONSTRAINTS_FILE=https://releases.openstack.org/constraints/upper/ussuri
+            - TEMPEST=true DEVSTACK_BRANCH=stable/ussuri ./devstack/bootstrap.sh
+      epilogue:
+        on_fail:
+          commands:
+            - mkdir logs
+            - sudo journalctl > logs/journalctl.txt
+            - artifact push job --expire-in 1d logs

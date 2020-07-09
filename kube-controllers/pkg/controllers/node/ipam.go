@@ -22,15 +22,16 @@ import (
 	"strings"
 	"time"
 
+	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
+	"k8s.io/apimachinery/pkg/api/errors"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	bapi "github.com/projectcalico/libcalico-go/lib/backend/api"
 	"github.com/projectcalico/libcalico-go/lib/backend/model"
 	cerrors "github.com/projectcalico/libcalico-go/lib/errors"
 	"github.com/projectcalico/libcalico-go/lib/ipam"
 	"github.com/projectcalico/libcalico-go/lib/options"
-	"github.com/sirupsen/logrus"
-	log "github.com/sirupsen/logrus"
-	"k8s.io/apimachinery/pkg/api/errors"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // syncIPAMCleanup cleans up any IPAM resources which should no longer exist based on nodes in the cluster.

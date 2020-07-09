@@ -447,8 +447,8 @@ var _ = Describe("Test Node conversion", func() {
 					Name:            "TestNode",
 					ResourceVersion: "1234",
 					Annotations: map[string]string{
-						nodeBgpIpv4AddrAnnotation: "172.17.17.10",
-						nodeBgpAsnAnnotation:      "2546",
+						nodeBgpIpv4AddrAnnotation:        "172.17.17.10",
+						nodeBgpAsnAnnotation:             "2546",
 						nodeWireguardPublicKeyAnnotation: "abcd",
 					},
 				},

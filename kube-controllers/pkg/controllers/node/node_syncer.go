@@ -15,13 +15,14 @@
 package node
 
 import (
+	"github.com/sirupsen/logrus"
+	v1 "k8s.io/api/core/v1"
+
 	api "github.com/projectcalico/libcalico-go/lib/apis/v3"
 	apiv3 "github.com/projectcalico/libcalico-go/lib/apis/v3"
 	bapi "github.com/projectcalico/libcalico-go/lib/backend/api"
 	"github.com/projectcalico/libcalico-go/lib/backend/model"
 	"github.com/projectcalico/libcalico-go/lib/backend/watchersyncer"
-	"github.com/sirupsen/logrus"
-	v1 "k8s.io/api/core/v1"
 )
 
 func (c *NodeController) initSyncer() {

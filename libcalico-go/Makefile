@@ -70,7 +70,7 @@ gen-files: gen-crds
 
 ## Force a rebuild of custom resource definition yamls
 gen-crds: bin/controller-gen
-	@./bin/controller-gen  crd:crdVersions=v1 paths=./lib/apis/... output:crd:dir=config/crd/
+	@$(DOCKER_GO_BUILD) ./bin/controller-gen  crd:crdVersions=v1 paths=./lib/apis/... output:crd:dir=config/crd/
 	@rm config/crd/_.yaml
 
 # Used for generating CRD files.

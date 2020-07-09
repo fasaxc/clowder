@@ -202,7 +202,7 @@ blocks:
     - name: "Node: CI"
       commands:
       - make ci
-    - name: "make k8s-test"
+    - name: "Node: k8s-test"
       commands:
       - make k8s-test
 
@@ -219,10 +219,7 @@ blocks:
       - git fetch --unshallow
       - cd kube-controllers
     jobs:
-    - name: "make ci"
+    - name: "kube-controllers: tests"
       commands:
       - make ci
-    - name: "make k8s-test"
-      commands:
-      - make k8s-test
 

@@ -27,6 +27,14 @@ import (
 	"strings"
 	"time"
 
+	log "github.com/sirupsen/logrus"
+	kapiv1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+
 	"github.com/projectcalico/libcalico-go/lib/apiconfig"
 	api "github.com/projectcalico/libcalico-go/lib/apis/v3"
 	client "github.com/projectcalico/libcalico-go/lib/clientv3"
@@ -41,13 +49,6 @@ import (
 	"github.com/projectcalico/node/pkg/calicoclient"
 	"github.com/projectcalico/node/pkg/startup/autodetection"
 	"github.com/projectcalico/node/pkg/startup/autodetection/ipv4"
-	log "github.com/sirupsen/logrus"
-	kapiv1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
-	"k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 )
 
 const (
@@ -481,9 +482,9 @@ func configureIPsAndSubnets(node *api.Node) (bool, error) {
 			log.Warnf("Autodetection of IPv6 address failed, keeping existing value: %s", node.Spec.BGP.IPv6Address)
 			validateIP(node.Spec.BGP.IPv6Address)
 		}
-	} else if ipv6Env == "none" && node.Spec.BGP.IPv6Address!="" {
+	} else if ipv6Env == "none" && node.Spec.BGP.IPv6Address != "" {
 		log.Infof("Autodetection for IPv6 disabled, keeping existing value: %s", node.Spec.BGP.IPv6Address)
-		validateIP(node.Spec.BGP.IPv6Address)	
+		validateIP(node.Spec.BGP.IPv6Address)
 	} else if ipv6Env != "none" {
 		if ipv6Env != "" {
 			node.Spec.BGP.IPv6Address = parseIPEnvironment("IP6", ipv6Env, 6)

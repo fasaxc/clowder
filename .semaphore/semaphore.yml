@@ -80,6 +80,8 @@ blocks:
       - 'cache store felix-image-${SEMAPHORE_GIT_SHA} /tmp/calico-felix.tar'
 
 - name: "Felix: FV Tests"
+  run:
+    when: "change_in('/felix/') or change_in('/typha/') or change_in('/libcalico-go/')"
   dependencies: ["Felix: Build"]
   task:
     prologue:
@@ -151,24 +153,6 @@ blocks:
         - gcloud --quiet compute instances delete ${VM_NAME} --zone=${ZONE}
     secrets:
     - name: google-service-account-for-gce
-
-- name: "Static checks"
-  dependencies: []
-  task:
-    agent:
-      machine:
-        # Linters use a lot of RAM so use a bigger machine type.
-        type: e1-standard-8
-        os_image: ubuntu1804
-    prologue:
-      commands:
-      - checkout
-      - cache restore go-pkg-cache
-      - cache restore go-mod-cache
-    jobs:
-    - name: Static checks
-      commands:
-      - make static-checks
 
 - name: "Felix: Multi-arch builds, UT, k8sfv-tests"
   run:

@@ -8,6 +8,14 @@ all:
 	  fi; \
 	done
 
+pull-all:
+	for dir in *; do \
+	  if test -d $$dir; then \
+	    git fetch $$dir && \
+	    git merge --no-edit $$dir/master -Xsubtree; \
+	  fi; \
+	done
+
 static-checks:
 	for dir in *; do \
 	  if [ $dir = "bird" ]; then \

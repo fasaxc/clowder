@@ -27,3 +27,5 @@ require (
 	google.golang.org/grpc v1.23.1
 	k8s.io/client-go v12.0.0+incompatible // indirect
 )
+
+replace github.com/projectcalico/libcalico-go => ../libcalico-go

@@ -31,3 +31,5 @@ require (
 	k8s.io/apimachinery v0.17.2
 	k8s.io/client-go v0.17.2
 )
+
+replace github.com/projectcalico/libcalico-go => ../libcalico-go

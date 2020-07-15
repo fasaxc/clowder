@@ -36,3 +36,5 @@ require (
 	// k8s.io/client-go 1.16.3 is at 6c5935290e33
 	k8s.io/client-go v0.17.2
 )
+
+replace github.com/projectcalico/libcalico-go => ../libcalico-go

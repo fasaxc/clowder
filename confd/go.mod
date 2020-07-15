@@ -22,4 +22,9 @@ require (
 	k8s.io/client-go v0.17.2
 )
 
-replace github.com/sirupsen/logrus => github.com/projectcalico/logrus v1.0.4-calico
+replace (
+	github.com/kelseyhightower/confd => ../confd
+	github.com/projectcalico/libcalico-go => ../libcalico-go
+	github.com/projectcalico/typha => ../typha
+	github.com/sirupsen/logrus => github.com/projectcalico/logrus v1.0.4-calico
+)

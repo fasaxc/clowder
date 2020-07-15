@@ -30,6 +30,10 @@ require (
 )
 
 replace (
+	github.com/projectcalico/felix => ../felix
+	github.com/projectcalico/libcalico-go => ../libcalico-go
+	github.com/projectcalico/typha => ../typha
+
 	github.com/sirupsen/logrus => github.com/projectcalico/logrus v1.0.4-calico
 	k8s.io/api => k8s.io/api v0.17.2
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.17.2

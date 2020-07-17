@@ -12,7 +12,7 @@ pull-all:
 	for dir in *; do \
 	  if test -d $$dir; then \
 	    git fetch $$dir && \
-	    git merge --no-edit $$dir/master -Xsubtree=$$dir; \
+	    git merge --no-edit $$dir/master -Xsubtree=$$dir || exit 1; \
 	  fi; \
 	done
 

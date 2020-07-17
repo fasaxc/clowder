@@ -3,6 +3,7 @@ module github.com/projectcalico/felix
 go 1.13
 
 require (
+	github.com/aws/aws-sdk-go v1.31.15
 	github.com/containernetworking/plugins v0.8.2
 	github.com/davecgh/go-spew v1.1.1
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
@@ -22,17 +23,15 @@ require (
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.9.0
-	github.com/pkg/errors v0.8.1
-	github.com/pkg/profile v1.5.0
-	github.com/projectcalico/libcalico-go v1.7.2-0.20200709141311-ef7c3bc8fea0
+	github.com/pkg/errors v0.9.1
+	github.com/projectcalico/libcalico-go v1.7.2-0.20200715213032-ef6b0a698105
 	github.com/projectcalico/pod2daemon v0.0.0-20191223184832-a0e1c4693271
-	github.com/projectcalico/typha v0.7.3-0.20200617040736-8be068576bc6
+	github.com/projectcalico/typha v0.7.3-0.20200715220106-585d49a6de00
 	github.com/prometheus/client_golang v1.0.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.6.1
-	github.com/stretchr/testify v1.5.1 // indirect
 	github.com/vishvananda/netlink v1.0.0
 	golang.org/x/net v0.0.0-20200226121028-0de0cce0169b
 	golang.org/x/sys v0.0.0-20200202164722-d101bd2416d5

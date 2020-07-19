@@ -3,7 +3,7 @@ module github.com/projectcalico/node
 go 1.13
 
 require (
-	github.com/kelseyhightower/confd v0.0.0-00010101000000-000000000000
+	github.com/kelseyhightower/confd v0.0.0
 	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.9.0
 	github.com/pkg/errors v0.9.1

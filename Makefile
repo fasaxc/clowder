@@ -9,12 +9,16 @@ all:
 	done
 
 pull-all:
+	git fetch --all
 	for dir in *; do \
 	  if test -d $$dir; then \
-	    git fetch $$dir && \
 	    git merge --no-edit $$dir/master -Xsubtree=$$dir || exit 1; \
 	  fi; \
 	done
+
+mod-tidy:
+	# FIXME Should be run in the container.
+	for dir in *; do ( cd $$dir && go mod tidy; ); done
 
 static-checks:
 	for dir in *; do \

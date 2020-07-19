@@ -172,7 +172,7 @@ blocks:
 
 - name: "Node: Tests"
   run:
-    when: "change_in('/felix/') or change_in('/libcalico-go/') or change_in('/confd/') or change_in('/bird/') or change_in('/pod2daemon/')"
+    when: "change_in('/node/') or change_in('/felix/') or change_in('/libcalico-go/') or change_in('/confd/') or change_in('/bird/') or change_in('/pod2daemon/')"
   dependencies: []
   task:
     prologue:

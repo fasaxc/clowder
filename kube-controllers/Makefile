@@ -39,6 +39,10 @@ endif
 
 include Makefile.common
 
+# Temporary override of common makefile
+K8S_VERSION=v1.17.4
+KUBECTL_VERSION=v1.17.4
+
 ###############################################################################
 
 HYPERKUBE_IMAGE?=gcr.io/google_containers/hyperkube-$(ARCH):$(K8S_VERSION)

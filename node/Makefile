@@ -145,6 +145,8 @@ remote-deps: mod-download
 		cp -r `go list -m -f "{{.Dir}}" github.com/projectcalico/felix`/bpf-apache bin/bpf; \
 		chmod -R +w bin/bpf; \
 		chmod +x bin/bpf/bpf-gpl/list-* bin/bpf/bpf-gpl/calculate-*; \
+		make -C ./bin/bpf/bpf-apache/ clean; \
+		make -C ./bin/bpf/bpf-gpl/ clean; \
 		make -j 16 -C ./bin/bpf/bpf-apache/ all; \
 		make -j 16 -C ./bin/bpf/bpf-gpl/ all; \
 		cp bin/bpf/bpf-gpl/bin/* filesystem/usr/lib/calico/bpf/; \

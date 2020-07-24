@@ -8,13 +8,18 @@ all:
 	  fi; \
 	done
 
-pull-all:
+fetch-all:
 	git fetch --all
+
+merge-all:
 	for dir in *; do \
 	  if test -d $$dir; then \
 	    git merge --no-edit $$dir/master -Xsubtree=$$dir || exit 1; \
 	  fi; \
 	done
+
+pull-all:
+	$(MAKE) fetch-all merge-all
 
 mod-tidy:
 	# FIXME Should be run in the container.

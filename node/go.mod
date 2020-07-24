@@ -3,11 +3,13 @@ module github.com/projectcalico/node
 go 1.13
 
 require (
+	github.com/golangci/golangci-lint v1.27.0 // indirect
+	github.com/hashicorp/go-version v1.2.0 // indirect
 	github.com/kelseyhightower/confd v0.0.0
 	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.9.0
 	github.com/pkg/errors v0.9.1
-	github.com/projectcalico/felix v0.0.0-20200717172741-bbb79439123d
+	github.com/projectcalico/felix v0.0.0-20200723080606-57ca7aae25e1
 	github.com/projectcalico/libcalico-go v1.7.2-0.20200722155955-02107623e057
 	github.com/projectcalico/typha v0.7.3-0.20200722203859-5309010450e2
 	github.com/sirupsen/logrus v1.4.2

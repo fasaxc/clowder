@@ -87,6 +87,7 @@ github.com/envoyproxy/data-plane-api v0.0.0-20191013220143-9ad4478ef57a h1:8pyu5
 github.com/envoyproxy/data-plane-api v0.0.0-20191016214043-f687ccda3d5a h1:aHmsmyvSJwZYJZPbuID0/7mOWaF8M00gklKbYwvb6U4=
 github.com/envoyproxy/data-plane-api v0.0.0-20200428215905-0365877d8e33 h1:HDUtgtiBu4IRIEYTWGBHeWKH7sfAfA9tE9L/VP9woF8=
 github.com/envoyproxy/data-plane-api v0.0.0-20200717165328-20877998872c h1:yWVheM0tLP69+4i/XgTvAvGqw7F7VyZncGW56lMevtA=
+github.com/envoyproxy/data-plane-api v0.0.0-20200723220029-7017abb12d27 h1:LK5eFwB1A8FpAYs8bMJ0Q6yfCk/ZWgiAlqeRXz3vSlI=
 github.com/evanphx/json-patch v0.0.0-20190203023257-5858425f7550/go.mod h1:50XU6AFN0ol/bzJsmQLiYLvXMP4fmwYFNcr97nuDLSk=
 github.com/evanphx/json-patch v4.2.0+incompatible/go.mod h1:50XU6AFN0ol/bzJsmQLiYLvXMP4fmwYFNcr97nuDLSk=
 github.com/fatih/color v1.7.0/go.mod h1:Zm6kSWBoL9eyXnKyktHP6abPY2pDugNf5KwzbycvMj4=

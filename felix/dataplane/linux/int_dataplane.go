@@ -923,7 +923,7 @@ func (d *InternalDataplane) setUpIptablesBPF() {
 			}
 			// Catch any workload to host packets that haven't been through the BPF program.
 			inputRules = append(inputRules, iptables.Rule{
-				Match:  iptables.Match().InInterface(prefix + "+").NotMarkMatchesWithMask(tc.MarkSeen, tc.MarkSeenMask),
+				Match:  iptables.Match().InInterface(prefix+"+").NotMarkMatchesWithMask(tc.MarkSeen, tc.MarkSeenMask),
 				Action: iptables.DropAction{},
 			})
 		}
@@ -1030,6 +1030,9 @@ func (d *InternalDataplane) setUpIptablesNormal() {
 		t.InsertOrAppendRules("OUTPUT", []iptables.Rule{{
 			Action: iptables.JumpAction{Target: rules.ChainFilterOutput},
 		}})
+
+		// Include rules which should be appended to the filter table forward chain.
+		t.AppendRules("FORWARD", d.ruleRenderer.StaticFilterForwardAppendRules())
 	}
 	for _, t := range d.iptablesNATTables {
 		t.UpdateChains(d.ruleRenderer.StaticNATTableChains(t.IPVersion))

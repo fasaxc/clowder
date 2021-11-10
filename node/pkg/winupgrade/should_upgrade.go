@@ -20,7 +20,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/clientcmd"
 
-	"github.com/projectcalico/node/pkg/lifecycle/utils"
+	"github.com/projectcalico/calico/node/pkg/lifecycle/utils"
 
 	log "github.com/sirupsen/logrus"
 )

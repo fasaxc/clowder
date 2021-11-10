@@ -1,4 +1,4 @@
-PACKAGE_NAME=github.com/projectcalico/calicoctl
+PACKAGE_NAME = github.com/projectcalico/calico/calico/calicoctl
 GO_BUILD_VER=v0.59
 
 ORGANIZATION=projectcalico
@@ -14,9 +14,9 @@ ifdef LOCAL_BUILD
 PHONY: set-up-local-build
 LOCAL_BUILD_DEP:=set-up-local-build
 
-EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/libcalico-go:rw
+EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/calico/libcalico-go:rw
 $(LOCAL_BUILD_DEP):
-	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/libcalico-go=../libcalico-go
+	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/calico/libcalico-go=../libcalico-go
 endif
 
 
@@ -32,21 +32,16 @@ DEV_TAG_SUFFIX        ?= 0.dev
 EXCLUDEARCH?=
 
 ###############################################################################
-# Download and include Makefile.common
+# Download and include ../lib.Makefile
 #   Additions to EXTRA_DOCKER_ARGS need to happen before the include since
 #   that variable is evaluated when we declare DOCKER_RUN and siblings.
 ###############################################################################
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
-Makefile.common: Makefile.common.$(MAKE_BRANCH)
-	cp "$<" "$@"
-Makefile.common.$(MAKE_BRANCH):
-	# Clean up any files downloaded from other branches so they don't accumulate.
-	rm -f Makefile.common.*
-	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
 
-include Makefile.common
+
+include ../lib.Makefile
 
 ###############################################################################
 
@@ -124,7 +119,7 @@ gen-crds: remote-deps
 remote-deps: mod-download	
 	$(DOCKER_RUN) $(CALICO_BUILD) sh -ec ' \
 		$(GIT_CONFIG_SSH) \
-		cp -r `go list -m -f "{{.Dir}}" github.com/projectcalico/libcalico-go`/config .; \
+		cp -r `go list -m -f "{{.Dir}}" github.com/projectcalico/calico/libcalico-go`/config .; \
 		chmod -R +w config/'
 
 ###############################################################################

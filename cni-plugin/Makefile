@@ -1,4 +1,4 @@
-PACKAGE_NAME=github.com/projectcalico/cni-plugin
+PACKAGE_NAME = github.com/projectcalico/calico/calico/cni-plugin
 GO_BUILD_VER=v0.59
 
 ORGANIZATION=projectcalico
@@ -23,19 +23,14 @@ endif
 BUILD_IMAGES   ?=$(CNI_PLUGIN_IMAGE)
 
 ###############################################################################
-# Download and include Makefile.common
+# Download and include ../lib.Makefile
 #   Additions to EXTRA_DOCKER_ARGS need to happen before the include since
 #   that variable is evaluated when we declare DOCKER_RUN and siblings.
 ###############################################################################
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
-Makefile.common: Makefile.common.$(MAKE_BRANCH)
-	cp "$<" "$@"
-Makefile.common.$(MAKE_BRANCH):
-	# Clean up any files downloaded from other branches so they don't accumulate.
-	rm -f Makefile.common.*
-	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
+
 
 # Build mounts for running in "local build" mode. This allows an easy build using local development code,
 # assuming that there is a local checkout of libcalico in the same directory as this repo.
@@ -43,15 +38,15 @@ ifdef LOCAL_BUILD
 PHONY: set-up-local-build
 LOCAL_BUILD_DEP:=set-up-local-build
 
-EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/libcalico-go:rw
+EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/calico/libcalico-go:rw
 $(LOCAL_BUILD_DEP):
-	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/libcalico-go=../libcalico-go
+	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/calico/libcalico-go=../libcalico-go
 endif
 
 # Add in local static-checks
 LOCAL_CHECKS=check-boring-ssl
 
-include Makefile.common
+include ../lib.Makefile
 
 ###############################################################################
 
@@ -230,7 +225,7 @@ test-cni-versions:
 config/crd: mod-download
 	mkdir -p config/crd
 	$(DOCKER_GO_BUILD) sh -c ' \
-		cp -r `go list -m -f "{{.Dir}}" github.com/projectcalico/libcalico-go`/config/crd/* config/crd; \
+		cp -r `go list -m -f "{{.Dir}}" github.com/projectcalico/calico/libcalico-go`/config/crd/* config/crd; \
 		chmod +w config/crd/*'
 
 ## Kubernetes apiserver used for tests

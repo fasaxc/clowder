@@ -1,4 +1,4 @@
-PACKAGE_NAME?=github.com/projectcalico/pod2daemon
+PACKAGE_NAME = github.com/projectcalico/calico/calico/pod2daemon
 GO_BUILD_VER?=v0.58
 
 ORGANIZATION=projectcalico
@@ -23,19 +23,14 @@ endif
 BUILD_IMAGES ?=$(FLEXVOL_IMAGE)
 
 ###############################################################################
-# Download and include Makefile.common before anything else
+# Download and include ../lib.Makefile before anything else
 ###############################################################################
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
-Makefile.common: Makefile.common.$(MAKE_BRANCH)
-	cp "$<" "$@"
-Makefile.common.$(MAKE_BRANCH):
-	# Clean up any files downloaded from other branches so they don't accumulate.
-	rm -f Makefile.common.*
-	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
 
-include Makefile.common
+
+include ../lib.Makefile
 
 ###############################################################################
 

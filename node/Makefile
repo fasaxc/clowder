@@ -1,4 +1,4 @@
-PACKAGE_NAME?=github.com/projectcalico/node
+PACKAGE_NAME = github.com/projectcalico/calico/node
 GO_BUILD_VER?=v0.58
 
 ORGANIZATION=projectcalico
@@ -21,8 +21,8 @@ endif
 
 WINDOWS_VERSIONS?=1809 2004 20H2 ltsc2022
 BUILD_IMAGES ?=$(NODE_IMAGE)
-LIBBPF_DOCKER_PATH=/go/src/github.com/projectcalico/node/bin/third-party/libbpf/src
-BPF_GPL_DOCKER_PATH=/go/src/github.com/projectcalico/node/bin/bpf/bpf-gpl
+LIBBPF_DOCKER_PATH=/go/src/github.com/projectcalico/calico/node/bin/third-party/libbpf/src
+BPF_GPL_DOCKER_PATH=/go/src/github.com/projectcalico/calico/node/bin/bpf/bpf-gpl
 LIBBPF_PATH=./bin/third-party/libbpf/src
 
 # Build mounts for running in "local build" mode. This allows an easy build using local development code,
@@ -31,15 +31,15 @@ ifdef LOCAL_BUILD
 PHONY: set-up-local-build
 LOCAL_BUILD_DEP:=set-up-local-build
 
-EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/libcalico-go:rw \
-	-v $(CURDIR)/../felix:/go/src/github.com/projectcalico/felix:rw \
-	-v $(CURDIR)/../typha:/go/src/github.com/projectcalico/typha:rw \
-	-v $(CURDIR)/../confd:/go/src/github.com/projectcalico/confd:rw
+EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/calico/libcalico-go:rw \
+	-v $(CURDIR)/../felix:/go/src/github.com/projectcalico/calico/felix:rw \
+	-v $(CURDIR)/../typha:/go/src/github.com/projectcalico/calico/typha:rw \
+	-v $(CURDIR)/../confd:/go/src/github.com/projectcalico/calico/confd:rw
 
 $(LOCAL_BUILD_DEP):
-	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/libcalico-go=../libcalico-go \
-		-replace=github.com/projectcalico/felix=../felix \
-		-replace=github.com/projectcalico/typha=../typha \
+	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/calico/libcalico-go=../libcalico-go \
+		-replace=github.com/projectcalico/calico/felix=../felix \
+		-replace=github.com/projectcalico/calico/typha=../typha \
 		-replace=github.com/kelseyhightower/confd=../confd
 endif
 
@@ -47,21 +47,16 @@ endif
 LOCAL_CHECKS=check-boring-ssl
 
 ###############################################################################
-# Download and include Makefile.common
+# Download and include ../lib.Makefile
 #   Additions to EXTRA_DOCKER_ARGS need to happen before the include since
 #   that variable is evaluated when we declare DOCKER_RUN and siblings.
 ###############################################################################
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
-Makefile.common: Makefile.common.$(MAKE_BRANCH)
-	cp "$<" "$@"
-Makefile.common.$(MAKE_BRANCH):
-	# Clean up any files downloaded from other branches so they don't accumulate.
-	rm -f Makefile.common.*
-	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
 
-include Makefile.common
+
+include ../lib.Makefile
 
 # Required for eBPF support in ARM64
 ifeq ($(ARCH),arm64)
@@ -226,11 +221,8 @@ build: $(NODE_CONTAINER_BINARY)
 remote-deps-copy-bpf: mod-download
 	rm -rf bin/bpf
 	mkdir -p bin/bpf
-	$(DOCKER_RUN) $(CALICO_BUILD) sh -ec ' \
-		$(GIT_CONFIG_SSH) \
-		cp -r `go list -mod=mod -m -f "{{.Dir}}" github.com/projectcalico/felix`/bpf-gpl bin/bpf; \
-		cp -r `go list -mod=mod -m -f "{{.Dir}}" github.com/projectcalico/felix`/bpf-apache bin/bpf; \
-		chmod -R +w bin/bpf'
+	cp -r ../felix/bpf-gpl bin/bpf
+	cp -r ../felix/bpf-apache bin/bpf
 
 remote-deps: remote-deps-copy-bpf
 	# Recreate the directory so that we are sure to clean up any old files.
@@ -240,25 +232,26 @@ remote-deps: remote-deps-copy-bpf
 	rm -rf bin/third-party
 	rm -rf filesystem/usr/lib/calico/bpf/
 	mkdir -p filesystem/usr/lib/calico/bpf/
+
+	cp -r ../confd/etc/calico/confd/conf.d filesystem/etc/calico/confd/conf.d
+	cp -r ../confd/etc/calico/confd/config filesystem/etc/calico/confd/config
+	cp -r ../confd/etc/calico/confd/templates filesystem/etc/calico/confd/templates
+	cp -r ../libcalico-go/config config
+
 	$(DOCKER_RUN) $(CALICO_BUILD) sh -ec ' \
 		$(GIT_CONFIG_SSH) \
-		cp -r `go list -mod=mod -m -f "{{.Dir}}" github.com/kelseyhightower/confd`/etc/calico/confd/conf.d filesystem/etc/calico/confd/conf.d; \
-		cp -r `go list -mod=mod -m -f "{{.Dir}}" github.com/kelseyhightower/confd`/etc/calico/confd/config filesystem/etc/calico/confd/config; \
-		cp -r `go list -mod=mod -m -f "{{.Dir}}" github.com/kelseyhightower/confd`/etc/calico/confd/templates filesystem/etc/calico/confd/templates; \
-		cp -r `go list -mod=mod -m -f "{{.Dir}}" github.com/projectcalico/libcalico-go`/config config; \
-		chmod +x bin/bpf/bpf-gpl/list-* bin/bpf/bpf-gpl/calculate-*; \
 		make -j 16 -C ./bin/bpf/bpf-apache/ all; \
 		make -j 16 -C ./bin/bpf/bpf-gpl/ all; \
 		cp bin/bpf/bpf-gpl/bin/* filesystem/usr/lib/calico/bpf/; \
 		cp bin/bpf/bpf-apache/bin/* filesystem/usr/lib/calico/bpf/; \
 		chmod -R +w filesystem/etc/calico/confd/ config/ filesystem/usr/lib/calico/bpf/'
 
-$(LIBBPF_PATH)/libbpf.a: go.mod
+$(LIBBPF_PATH)/libbpf.a: ../go.mod
 	$(MAKE) mod-download
 	mkdir -p bin/third-party
+	cp -r ../felix/bpf-gpl/include/libbpf bin/third-party
 	$(DOCKER_RUN) $(CALICO_BUILD) sh -ec ' \
 		$(GIT_CONFIG_SSH) \
-		cp -r `go list -mod=mod -m -f "{{.Dir}}" github.com/projectcalico/felix`/bpf-gpl/include/libbpf bin/third-party; \
 		chmod -R +w bin/third-party; \
 		make -j 16 -C $(LIBBPF_PATH) BUILD_STATIC_ONLY=1'
 
@@ -277,7 +270,7 @@ endif
 DOCKER_GO_BUILD_CGO=$(DOCKER_RUN) -e CGO_ENABLED=$(CGO_ENABLED) -e CGO_LDFLAGS=$(CGO_LDFLAGS) -e CGO_CFLAGS=$(CGO_CFLAGS) $(CALICO_BUILD)
 DOCKER_GO_BUILD_CGO_WINDOWS=$(DOCKER_RUN) -e CGO_ENABLED=$(CGO_ENABLED) $(CALICO_BUILD)
 
-$(NODE_CONTAINER_BINARY): remote-deps-copy-bpf $(LIBBPF_PATH)/libbpf.a $(LOCAL_BUILD_DEP) $(SRC_FILES) go.mod
+$(NODE_CONTAINER_BINARY): remote-deps-copy-bpf $(LIBBPF_PATH)/libbpf.a $(LOCAL_BUILD_DEP) $(SRC_FILES) ../go.mod
 	$(DOCKER_GO_BUILD_CGO) sh -c '$(GIT_CONFIG_SSH) go build -v -o $@ $(BUILD_FLAGS) $(LDFLAGS) ./cmd/calico-node/main.go'
 
 $(WINDOWS_BINARY):
@@ -340,15 +333,15 @@ endif
 	touch $@
 
 # download BIRD source to include in image.
-$(BIRD_SOURCE): go.mod
+$(BIRD_SOURCE): ../go.mod
 	mkdir -p filesystem/included-source/
 	wget -O $@ https://github.com/projectcalico/bird/tarball/$(BIRD_VERSION)
 
 # download any GPL felix code to include in the image.
-$(FELIX_GPL_SOURCE): go.mod
+$(FELIX_GPL_SOURCE): ../go.mod
 	mkdir -p filesystem/included-source/
 	$(DOCKER_RUN) $(CALICO_BUILD) sh -c ' \
-		tar cf $@ `go list -m -f "{{.Dir}}" github.com/projectcalico/felix`/bpf-gpl;'
+		tar cf $@ ../felix/bpf-gpl;'
 
 ###############################################################################
 # FV Tests

@@ -22,7 +22,7 @@ endif
 GO_BUILD_VER?=v0.40
 CALICO_BUILD?=calico/go-build:$(GO_BUILD_VER)
 LOCAL_USER_ID?=$(shell id -u $$USER)
-PACKAGE_NAME?=github.com/projectcalico/calico
+PACKAGE_NAME = github.com/projectcalico/calico/calico/calico
 
 # Determine whether there's a local yaml installed or use dockerized version.
 # Note in order to install local (faster) yaml: "go get github.com/mikefarah/yq.v2"
@@ -378,7 +378,7 @@ release-publish: release-prereqs $(UPLOAD_DIR) helm-index
 
 	@echo "Verify the GitHub release based on the pushed tag."
 	@echo ""
-	@echo "  https://github.com/projectcalico/calico/releases/tag/$(CALICO_VER)"
+	@echo "  https://github.com/projectcalico/calico/calico/releases/tag/$(CALICO_VER)"
 	@echo ""
 
 ## Updates helm-index with the new release chart
@@ -387,7 +387,7 @@ helm-index: release-prereqs
 	mkdir -p charts/$(CALICO_VER)/
 	cp $(RELEASE_HELM_CHART) charts/$(CALICO_VER)/
 	wget https://calico-public.s3.amazonaws.com/charts/index.yaml -O charts/index.yaml.bak
-	cd charts/ && helm repo index . --merge index.yaml.bak --url https://github.com/projectcalico/calico/releases/download/
+	cd charts/ && helm repo index . --merge index.yaml.bak --url https://github.com/projectcalico/calico/calico/releases/download/
 	aws --profile helm s3 cp index.yaml s3://calico-public/charts/ --acl public-read
 	rm -rf charts
 
@@ -437,7 +437,7 @@ endif
 MANIFEST_SRC?=$(DEFAULT_MANIFEST_SRC)
 
 $(RELEASE_WINDOWS_ZIP):
-	wget https://github.com/projectcalico/node/releases/download/$(NODE_VER)/calico-windows-$(NODE_VER).zip -P $(OUTPUT_DIR)
+	wget https://github.com/projectcalico/calico/node/releases/download/$(NODE_VER)/calico-windows-$(NODE_VER).zip -P $(OUTPUT_DIR)
 
 ## Create an archive that contains a complete "Calico" release. This includes the release tarball (which bundles manifests, images, and binaries) and the Calico for Windows installation archive.
 release-archive: release-prereqs $(RELEASE_DIR).tgz $(RELEASE_WINDOWS_ZIP)
@@ -522,7 +522,7 @@ $(RELEASE_DIR_IMAGES)/calico-flannel-migration-controller.tar:
 
 $(RELEASE_DIR_BIN)/%:
 	mkdir -p $(RELEASE_DIR_BIN)
-	wget https://github.com/projectcalico/calicoctl/releases/download/$(CTL_VER)/$(@F) -O $@
+	wget https://github.com/projectcalico/calico/calicoctl/releases/download/$(CTL_VER)/$(@F) -O $@
 	chmod +x $@
 
 ###############################################################################

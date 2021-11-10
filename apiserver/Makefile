@@ -1,12 +1,12 @@
-PACKAGE_NAME    ?= github.com/projectcalico/apiserver
+PACKAGE_NAME = github.com/projectcalico/calico/calico/apiserver
 GO_BUILD_VER    ?= v0.59
 GOMOD_VENDOR    := false
 GIT_USE_SSH      = true
 LOCAL_CHECKS     = lint-cache-dir goimports check-copyright check-boring-ssl
 # Used by Makefile.common
-LIBCALICO_REPO   = github.com/projectcalico/libcalico-go
+LIBCALICO_REPO   = github.com/projectcalico/calico/libcalico-go
 # Used only when doing local build
-LOCAL_LIBCALICO  = /go/src/github.com/projectcalico/libcalico-go
+LOCAL_LIBCALICO  = /go/src/github.com/projectcalico/calico/libcalico-go
 # Used so semaphore commits generated files when pins are updated
 EXTRA_FILES_TO_COMMIT=*_generated.go *_generated.*.go
 
@@ -68,21 +68,16 @@ RELEASE_LDFLAGS = -ldflags "$(VERSION_FLAGS) -w"
 KUBECONFIG_DIR? = /etc/kubernetes/admin.conf
 
 ##############################################################################
-# Download and include Makefile.common before anything else
+# Download and include ../lib.Makefile before anything else
 #   Additions to EXTRA_DOCKER_ARGS need to happen before the include since
 #   that variable is evaluated when we declare DOCKER_RUN and siblings.
 ##############################################################################
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
-Makefile.common: Makefile.common.$(MAKE_BRANCH)
-	cp "$<" "$@"
-Makefile.common.$(MAKE_BRANCH):
-	# Clean up any files downloaded from other branches so they don't accumulate.
-	rm -f Makefile.common.*
-	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
 
-include Makefile.common
+
+include ../lib.Makefile
 
 # We need CGO to leverage Boring SSL.  However, the cross-compile doesn't support CGO yet.
 ifeq ($(ARCH), $(filter $(ARCH),amd64))
@@ -211,7 +206,7 @@ check-copyright:
 config/crd: mod-download
 	mkdir -p config/crd
 	$(DOCKER_GO_BUILD) sh -c ' \
-		cp -r `go list -m -f "{{.Dir}}" github.com/projectcalico/libcalico-go`/config/crd/* config/crd; \
+		cp -r `go list -m -f "{{.Dir}}" github.com/projectcalico/calico/libcalico-go`/config/crd/* config/crd; \
 		chmod +w config/crd/*'
 
 ## Run etcd as a container (calico-etcd)

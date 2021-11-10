@@ -1,4 +1,4 @@
-PACKAGE_NAME=github.com/projectcalico/libcalico-go
+PACKAGE_NAME = github.com/projectcalico/calico/calico/libcalico-go
 GO_BUILD_VER=v0.59
 
 ORGANIZATION=projectcalico
@@ -13,21 +13,16 @@ GOMOD_VENDOR = false
 LOCAL_CHECKS = goimports check-gen-files
 
 ###############################################################################
-# Download and include Makefile.common
+# Download and include ../lib.Makefile
 #   Additions to EXTRA_DOCKER_ARGS need to happen before the include since
 #   that variable is evaluated when we declare DOCKER_RUN and siblings.
 ###############################################################################
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
-Makefile.common: Makefile.common.$(MAKE_BRANCH)
-	cp "$<" "$@"
-Makefile.common.$(MAKE_BRANCH):
-	# Clean up any files downloaded from other branches so they don't accumulate.
-	rm -f Makefile.common.*
-	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
 
-include Makefile.common
+
+include ../lib.Makefile
 
 ###############################################################################
 
@@ -75,7 +70,7 @@ gen-crds:
 		--v 1 --logtostderr \
 		--go-header-file "./docs/boilerplate.go.txt" \
 		--input-dirs "$(PACKAGE_NAME)/lib/upgrade/migrator/clients/v1/k8s/custom" \
-		--bounding-dirs "github.com/projectcalico/libcalico-go" \
+		--bounding-dirs "github.com/projectcalico/calico/libcalico-go" \
 		--output-file-base zz_generated.deepcopy'
 
 ./lib/apis/v3/zz_generated.deepcopy.go: $(APIS_SRCS)
@@ -83,7 +78,7 @@ gen-crds:
 		--v 1 --logtostderr \
 		--go-header-file "./docs/boilerplate.go.txt" \
 		--input-dirs "$(PACKAGE_NAME)/lib/apis/v3" \
-		--bounding-dirs "github.com/projectcalico/libcalico-go" \
+		--bounding-dirs "github.com/projectcalico/calico/libcalico-go" \
 		--output-file-base zz_generated.deepcopy'
 
 # Generate OpenAPI spec
@@ -286,7 +281,7 @@ release-tag: release-prereqs release-notes
 release-notes: release-prereqs
 	echo "This release is for build purposes only and this should not be referenced externally." > release-notes-$(VERSION)
 	echo "libcalico is not a stable interface." >> release-notes-$(VERSION)
-	echo "If you need an API you should use [projectcalico/api](https://github.com/projectcalico/api)." >> release-notes-$(VERSION)
+	echo "If you need an API you should use [projectcalico/api](https://github.com/projectcalico/calico/api)." >> release-notes-$(VERSION)
 
 ## Pushes a github tag `make release-tag`.
 release-publish: release-prereqs

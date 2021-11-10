@@ -1,4 +1,4 @@
-PACKAGE_NAME=github.com/projectcalico/kube-controllers
+PACKAGE_NAME = github.com/projectcalico/calico/calico/kube-controllers
 GO_BUILD_VER=v0.59
 
 ORGANIZATION=projectcalico
@@ -16,33 +16,28 @@ ifdef LOCAL_BUILD
 PHONY: set-up-local-build
 LOCAL_BUILD_DEP:=set-up-local-build
 
-EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/libcalico-go:rw \
-	-v $(CURDIR)/../felix:/go/src/github.com/projectcalico/felix:rw
+EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/calico/libcalico-go:rw \
+	-v $(CURDIR)/../felix:/go/src/github.com/projectcalico/calico/felix:rw
 
 $(LOCAL_BUILD_DEP):
-	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/libcalico-go=../libcalico-go \
-		-replace=github.com/projectcalico/felix=../felix
+	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/calico/libcalico-go=../libcalico-go \
+		-replace=github.com/projectcalico/calico/felix=../felix
 endif
 
 # Add in local static-checks
 LOCAL_CHECKS=check-boring-ssl
 
 ###############################################################################
-# Download and include Makefile.common
+# Download and include ../lib.Makefile
 #   Additions to EXTRA_DOCKER_ARGS need to happen before the include since
 #   that variable is evaluated when we declare DOCKER_RUN and siblings.
 ###############################################################################
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
-Makefile.common: Makefile.common.$(MAKE_BRANCH)
-	cp "$<" "$@"
-Makefile.common.$(MAKE_BRANCH):
-	# Clean up any files downloaded from other branches so they don't accumulate.
-	rm -f Makefile.common.*
-	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
 
-include Makefile.common
+
+include ../lib.Makefile
 
 ETCD_IMAGE?=quay.io/coreos/etcd:$(ETCD_VERSION)-$(BUILDARCH)
 # If building on amd64 omit the arch in the container name.
@@ -129,7 +124,7 @@ endif
 remote-deps: mod-download
 	@mkdir -p tests/crds/
 	$(DOCKER_RUN) $(CALICO_BUILD) sh -c ' \
-		cp `go list -m -f "{{.Dir}}" github.com/projectcalico/libcalico-go`/config/crd/* tests/crds/; \
+		cp `go list -m -f "{{.Dir}}" github.com/projectcalico/calico/libcalico-go`/config/crd/* tests/crds/; \
 		chmod +w tests/crds/*'
 
 ###############################################################################

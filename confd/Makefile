@@ -8,19 +8,14 @@ SEMAPHORE_PROJECT_ID=$(SEMAPHORE_CONFD_PROJECT_ID)
 SEMAPHORE_AUTO_PIN_UPDATE_PROJECT_IDS=$(SEMAPHORE_NODE_PROJECT_ID)
 
 ###############################################################################
-# Download and include Makefile.common
+# Download and include ../lib.Makefile
 #   Additions to EXTRA_DOCKER_ARGS need to happen before the include since
 #   that variable is evaluated when we declare DOCKER_RUN and siblings.
 ###############################################################################
 MAKE_BRANCH?=$(GO_BUILD_VER)
 MAKE_REPO?=https://raw.githubusercontent.com/projectcalico/go-build/$(MAKE_BRANCH)
 
-Makefile.common: Makefile.common.$(MAKE_BRANCH)
-	cp "$<" "$@"
-Makefile.common.$(MAKE_BRANCH):
-	# Clean up any files downloaded from other branches so they don't accumulate.
-	rm -f Makefile.common.*
-	curl --fail $(MAKE_REPO)/Makefile.common -o "$@"
+
 
 # Build mounts for running in "local build" mode. This allows an easy build using local development code,
 # assuming that there is a local checkout of libcalico in the same directory as this repo.
@@ -28,14 +23,14 @@ ifdef LOCAL_BUILD
 PHONY: set-up-local-build
 LOCAL_BUILD_DEP:=set-up-local-build
 
-EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/libcalico-go:rw \
-	-v $(CURDIR)/../typha:/go/src/github.com/projectcalico/typha:rw
+EXTRA_DOCKER_ARGS+=-v $(CURDIR)/../libcalico-go:/go/src/github.com/projectcalico/calico/libcalico-go:rw \
+	-v $(CURDIR)/../typha:/go/src/github.com/projectcalico/calico/typha:rw
 $(LOCAL_BUILD_DEP):
-	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/libcalico-go=../libcalico-go \
-		-replace=github.com/projectcalico/typha=../typha
+	$(DOCKER_RUN) $(CALICO_BUILD) go mod edit -replace=github.com/projectcalico/calico/libcalico-go=../libcalico-go \
+		-replace=github.com/projectcalico/calico/typha=../typha
 endif
 
-include Makefile.common
+include ../lib.Makefile
 
 # Override K8S_VERSION
 K8S_VERSION=v1.17.0
@@ -191,11 +186,11 @@ bin/kubectl:
 	chmod +x $@
 
 bin/bird:
-	curl -sSf -L --retry 5 https://github.com/projectcalico/bird/releases/download/$(BIRD_VERSION)/bird -o $@
+	curl -sSf -L --retry 5 https://github.com/projectcalico/calico/bird/releases/download/$(BIRD_VERSION)/bird -o $@
 	chmod +x $@
 
 bin/bird6:
-	curl -sSf -L --retry 5 https://github.com/projectcalico/bird/releases/download/$(BIRD_VERSION)/bird6 -o $@
+	curl -sSf -L --retry 5 https://github.com/projectcalico/calico/bird/releases/download/$(BIRD_VERSION)/bird6 -o $@
 	chmod +x $@
 
 bin/calico-node:
@@ -272,7 +267,7 @@ release-publish: release-prereqs
 
 	@echo "Finalize the GitHub release based on the pushed tag."
 	@echo ""
-	@echo "  https://github.com/projectcalico/confd/releases/tag/$(VERSION)"
+	@echo "  https://github.com/projectcalico/calico/confd/releases/tag/$(VERSION)"
 	@echo ""
 
 # release-prereqs checks that the environment is configured properly to create a release.
